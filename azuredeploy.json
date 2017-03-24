@@ -1,8 +1,56 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {},
-  "resources": [],
+  "parameters": {
+      "testyuvistoreType": {
+          "type": "string",
+          "defaultValue": "Standard_LRS",
+          "allowedValues": [
+              "Standard_LRS",
+              "Standard_ZRS",
+              "Standard_GRS",
+              "Standard_RAGRS",
+              "Premium_LRS"
+          ]
+      }},
+  "variables": {
+      "testyuvistoreName": "[concat('testyuvistore', uniqueString(resourceGroup().id))]",
+      "testvnetPrefix": "10.0.0.0/16",
+      "testvnetSubnet1Name": "Subnet-1",
+      "testvnetSubnet1Prefix": "10.0.0.0/24",
+      "testvnetSubnet2Name": "Subnet-2",
+      "testvnetSubnet2Prefix": "10.0.1.0/24"},
+  "resources": [
+      {
+          "name": "testvnet",
+          "type": "Microsoft.Network/virtualNetworks",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2016-03-30",
+          "dependsOn": [ ],
+          "tags": {
+              "displayName": "testvnet"
+          },
+          "properties": {
+              "addressSpace": {
+                  "addressPrefixes": [
+                      "[variables('testvnetPrefix')]"
+                  ]
+              },
+              "subnets": [
+                  {
+                      "name": "[variables('testvnetSubnet1Name')]",
+                      "properties": {
+                          "addressPrefix": "[variables('testvnetSubnet1Prefix')]"
+                      }
+                  },
+                  {
+                      "name": "[variables('testvnetSubnet2Name')]",
+                      "properties": {
+                          "addressPrefix": "[variables('testvnetSubnet2Prefix')]"
+                      }
+                  }
+              ]
+          }
+      }],
   "outputs": {}
 }
